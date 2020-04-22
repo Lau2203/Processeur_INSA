@@ -6,6 +6,14 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
 entity ALU is
+	generic (
+			ALU_ADD	: STD_LOGIC_VECTOR(2 downto 0) := "000";
+			ALU_SUB	: STD_LOGIC_VECTOR(2 downto 0) := "001";
+			ALU_MUL	: STD_LOGIC_VECTOR(2 downto 0) := "010";
+			ALU_AND	: STD_LOGIC_VECTOR(2 downto 0) := "011";
+			ALU_XOR	: STD_LOGIC_VECTOR(2 downto 0) := "100";
+			ALU_OR	: STD_LOGIC_VECTOR(2 downto 0) := "101";
+		);
 	Port(
 		OPERAND1	: in 	STD_LOGIC_VECTOR(7 downto 0);	--< The first operand in the arithmetic operation
 		OPERAND2	: in 	STD_LOGIC_VECTOR(7 downto 0);	--< The second operand in the arithmetic operation
@@ -24,15 +32,6 @@ end ALU;
 architecture Behavioral of ALU is 
 
 	signal RESULT_TMP : STD_LOGIC_VECTOR(15 downto 0);
-
-	-- ALU_CTRL's possible values
-	constant ALU_ADD 	: STD_LOGIC_VECTOR(2 downto 0) := "000";
-	constant ALU_SUB 	: STD_LOGIC_VECTOR(2 downto 0) := "001";
-	constant ALU_MUL 	: STD_LOGIC_VECTOR(2 downto 0) := "010";
-	
-	constant ALU_AND 	: STD_LOGIC_VECTOR(2 downto 0) := "011";
-	constant ALU_XOR 	: STD_LOGIC_VECTOR(2 downto 0) := "100";
-	constant ALU_OR	: STD_LOGIC_VECTOR(2 downto 0) := "101";
 
 begin 
 

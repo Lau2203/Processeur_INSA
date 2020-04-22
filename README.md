@@ -1,7 +1,6 @@
 Processeur_INSA
 Laura Burlon--Roux & Aurélien Michaud
 
---------------------------------------------------------------------------------
 ----------------------------------- AVANCEE ------------------------------------
 
   - UAL : gestion de l'addition, soustraction et multiplication     - OK
@@ -17,6 +16,3 @@ Laura Burlon--Roux & Aurélien Michaud
   - Chemin des données                                              - KO
 
   - Gestion des aléas (optionnel)                                   - KO
-
---------------------------------------------------------------------------------
---------------------------------------------------------------------------------

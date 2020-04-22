@@ -1,20 +1,10 @@
-----------------------------------------------------------------------------------
--- Company: 
--- Engineers:
--- 
--- Create Date:    11:02:28 04/21/2020 
--- Design Name: 
--- Module Name:    RegisterFile - Behavioral 
--- Project Name: 
--- Target Devices: 
--- Tool versions: 
--- Description: 
-----------------------------------------------------------------------------------
+
 library IEEE;
+
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity RegisterFile is
+entity registers is
     Port ( W : in  STD_LOGIC;
            RST : in  STD_LOGIC;
            CLK : in  STD_LOGIC;
@@ -24,9 +14,9 @@ entity RegisterFile is
            DATA : in  STD_LOGIC_VECTOR (7 downto 0);
            QA : out  STD_LOGIC_VECTOR (7 downto 0);
            QB : out  STD_LOGIC_VECTOR (7 downto 0));
-end RegisterFile;
+end registers;
 
-architecture Behavioral of RegisterFile is
+architecture Behavioral of registers is
 
 	signal --à compléter;
 

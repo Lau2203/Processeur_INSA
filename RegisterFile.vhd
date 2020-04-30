@@ -3,44 +3,55 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
+library work;
+use work.constants.ALL;
+
 entity RegisterFile is
-	generic(register_nb : Natural := 16;
-		register_size : Natural := 8);
-    Port ( WRITE_REQ : in  STD_LOGIC;
-           RST : in  STD_LOGIC;
-           CLK : in  STD_LOGIC;
-           READ_REG_ADDR0 : in  STD_LOGIC_VECTOR (3 downto 0);
-           READ_REG_ADDR1 : in  STD_LOGIC_VECTOR (3 downto 0);
-           WRITE_REG_ADDR : in  STD_LOGIC_VECTOR (3 downto 0);
-           DATA : in  STD_LOGIC_VECTOR (7 downto 0);
-           Q0 : out  STD_LOGIC_VECTOR (7 downto 0);
-           Q1 : out  STD_LOGIC_VECTOR (7 downto 0));
+
+    Port (
+           RST 				: in  	STD_LOGIC;								--< All the registers are set to '0' when RST is active on '0'
+           CLK 				: in  	STD_LOGIC;								--< CLK
+			  
+           READ_REG_ADDR0 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the first register to be read
+           READ_REG_ADDR1 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the second register to be read
+			  
+			  Q0 					: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);	--> The data of the first register to be read
+           Q1 					: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);	--> The data of the second register to be read
+			  
+			  WRITE_REQ 		: in  	STD_LOGIC;								--< Flag to be set to '1' when DATA must overwrite a register
+           WRITE_REG_ADDR 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the register to be overwritten with DATA
+           DATA 				: in  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0)		--< The data to be written in the register at address WRITE_REG_ADDR
+			 );
 end RegisterFile;
 
 architecture Behavioral of RegisterFile is
-	
-	signal REGISTERS : STD_LOGIC_VECTOR((register_nb * register_size - 1) downto 0);
+
+	type reg_mem_type is array (0 to CONSTANT_REG_NB - 1) of STD_LOGIC_VECTOR (CONSTANT_REG_SIZE - 1 downto 0);
+
+	signal REGISTERS : reg_mem_type;
 
 begin
 	
-	-- LECTURE ASYNCHRONE
-	-- Si écriture et lecture sur le même registre, alors QA ou QB <= DATA 
-	-- Sinon (else) on va procéder à une lecture simple 
+	-- Asynchronous reading
+	-- If one register is to be both read and overwritten, then we output the new data (Q0 <= DATA)
+	-- Otherwise it is a mild reading operation for the output Q0 and Q1
 	Q0 <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR0 = WRITE_REG_ADDR)) else
-		   REGISTERS((to_integer(unsigned(READ_REG_ADDR0)) + 1) * register_size - 1 downto to_integer(unsigned(READ_REG_ADDR0 * register_size));
+		   REGISTERS(to_integer(unsigned(READ_REG_ADDR0)));
+			
 	Q1 <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR1 = WRITE_REG_ADDR)) else
-	      REGISTERS((to_integer(unsigned(READ_REG_ADDR0)) + 1) * register_size - 1 downto to_integer(unsigned(READ_REG_ADDR0 * register_size));
+	      REGISTERS(to_integer(unsigned(READ_REG_ADDR1)));
 
-	-- ECRITURE SYNCHRONE
+	-- Synchronized writing
 	process (clk) 
 	begin
 		if clk'event and clk = '1' then
-			-- Quand le signal RST est actif à '0', le contenu du BR est initialisé à 0x00.
+			-- When RST is active on '0', the register file is reset to 0x00 values
 			if RST = '0' then
-				REGISTERS <= others => '0';
-			else -- Ecriture simple
+				REGISTERS <= (others => (others => '0'));
+				
+			else -- Mild writing operation
 				if WRITE_REQ = '1' then
-					REGISTERS((to_integer(unsigned(WRITE_REG_ADDR) + 1) * register_size - 1) downto (to_integer(unsigned(WRITE_REG_ADDR)) * register_size)) <= DATA;
+					REGISTERS(to_integer(unsigned(WRITE_REG_ADDR))) <= DATA;
 				end if;
 			end if;
 		end if;	

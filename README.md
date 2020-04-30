@@ -5,17 +5,25 @@ Laura Burlon--Roux & Aurélien Michaud
 ```
 ----------------------------------- AVANCEE ------------------------------------
 
-  - UAL : gestion de l'addition, soustraction et multiplication     - OK
+  - UAL : gestion de l'addition, soustraction et multiplication		- OK
 
-  - Banc de registre : structure du code faite                      - en cours
+  - Banc de registre :							- OK
 
-  - Mémoire d'instruction : structure du code faite                 - en cours
+  - Mémoire d'instruction : 						- OK
 
-  - Mémoire des données : début structure                           - en cours
+  - Mémoire des données : 						- OK
 
-  - Pipeline                                                        - KO
+  - Pipeline								- OK
 
-  - Chemin des données                                              - KO
+  - MUX_DI								- OK
 
-  - Gestion des aléas (optionnel)                                   - KO
+--------------------------------------------------------------------------------
+
+  - MUX_EX								- KO
+  - MUX_MEM								- KO
+  - LC									- KO
+
+  - Chemin des données							- KO
+
+  - Gestion des aléas (optionnel)					- KO
 ```

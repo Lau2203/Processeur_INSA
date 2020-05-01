@@ -19,26 +19,29 @@ entity ALU is
 		OPERAND_1	: in 	STD_LOGIC_VECTOR(CONSTANT_OPERAND_SIZE - 1 downto 0);		--< The first operand in the arithmetic operation
 		OPERAND_2	: in 	STD_LOGIC_VECTOR(CONSTANT_OPERAND_SIZE - 1 downto 0);		--< The second operand in the arithmetic operation
 
-		ALU_CTRL	: in 	STD_LOGIC_VECTOR(CONSTANT_ALU_CTRL_SIZE - 1 downto 0);	--< The arithmetic operation to perform
+		ALU_CTRL		: in 	STD_LOGIC_VECTOR(CONSTANT_ALU_CTRL_SIZE - 1 downto 0);	--< The arithmetic operation to perform
 
-		RESULT	: out STD_LOGIC_VECTOR(CONSTANT_OPERAND_SIZE - 1 downto 0);		--> The final result of the arithmetic operation
+		RESULT		: out STD_LOGIC_VECTOR(CONSTANT_OPERAND_SIZE - 1 downto 0);		--> The final result of the arithmetic operation
 
-		NEG_FLAG	: out STD_LOGIC;			--> Negative FLAG : 1 when the result is negative, 0 otherwise
-		OVF_FLAG	: out STD_LOGIC;			--> Overflow FLAG : 1 when the result overflows the RESULT capacity, 0 otherwise
-		ZER_FLAG	: out STD_LOGIC;			--> Zero FLAG : 1 when the result equals 0, 0 otherwise
-		CAR_FLAG	: out STD_LOGIC			--> Carry FLAG : 1 when the arithmetic operation produced a carry, 0 otherwise
+		NEG_FLAG		: out STD_LOGIC;			--> Negative FLAG : 1 when the result is negative, 0 otherwise
+		OVF_FLAG		: out STD_LOGIC;			--> Overflow FLAG : 1 when the result overflows the RESULT capacity, 0 otherwise
+		ZER_FLAG		: out STD_LOGIC;			--> Zero FLAG : 1 when the result equals 0, 0 otherwise
+		CAR_FLAG		: out STD_LOGIC			--> Carry FLAG : 1 when the arithmetic operation produced a carry, 0 otherwise
 	);
 end ALU;
 
 architecture Behavioral of ALU is 
 
 	-- We double the size of the two operands by padding with zeros
-	signal OPERAND_1_DOUBLE_SIZE : STD_LOGIC_VECTOR(double_size - 1 downto 0) := zero_single_size & OPERAND_1;
-	signal OPERAND_2_DOUBLE_SIZE : STD_LOGIC_VECTOR(double_size - 1 downto 0) := zero_single_size & OPERAND_2;
+	signal OPERAND_1_DOUBLE_SIZE : STD_LOGIC_VECTOR(double_size - 1 downto 0);
+	signal OPERAND_2_DOUBLE_SIZE : STD_LOGIC_VECTOR(double_size - 1 downto 0);
 	-- The temporary overflow-safe result holder, needed to set flags
 	signal RESULT_TMP : STD_LOGIC_VECTOR((double_size - 1) downto 0);
 
 begin 
+
+	OPERAND_1_DOUBLE_SIZE <= zero_single_size & OPERAND_1;
+	OPERAND_2_DOUBLE_SIZE <= zero_single_size & OPERAND_2;
 
 	RESULT_TMP <=	OPERAND_1_DOUBLE_SIZE + OPERAND_2_DOUBLE_SIZE when ALU_CTRL = CONSTANT_ALU_ADD else
 						OPERAND_1_DOUBLE_SIZE - OPERAND_2_DOUBLE_SIZE when ALU_CTRL = CONSTANT_ALU_SUB else
@@ -62,7 +65,7 @@ begin
 					'0';
 
 
-	ZER_FLAG <= '1' when RESULT_TMP = zero_double_size else
+	ZER_FLAG <= '1' when RESULT_TMP(msb downto 0) = zero_single_size else
 					'0';
 
 	CAR_FLAG <= RESULT_TMP(msb + 1);

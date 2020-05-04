@@ -1,40 +1,9 @@
---------------------------------------------------------------------------------
--- Company: 
--- Engineer:
---
--- Create Date:   13:31:58 05/01/2020
--- Design Name:   
--- Module Name:   /home/cacao/INSA/CompilationAndProcessor/Processor_INSA/ALU_test.vhd
--- Project Name:  Processor_INSA_Xilinx
--- Target Device:  
--- Tool versions:  
--- Description:   
--- 
--- VHDL Test Bench Created by ISE for module: ALU
--- 
--- Dependencies:
--- 
--- Revision:
--- Revision 0.01 - File Created
--- Additional Comments:
---
--- Notes: 
--- This testbench has been automatically generated using types std_logic and
--- std_logic_vector for the ports of the unit under test.  Xilinx recommends
--- that these types always be used for the top-level I/O of a design in order
--- to guarantee that the testbench will bind correctly to the post-implementation 
--- simulation model.
---------------------------------------------------------------------------------
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 
 LIBRARY work;
 USE work.constants.ALL;
- 
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
---USE ieee.numeric_std.ALL;
- 
+
 ENTITY ALU_test IS
 END ALU_test;
  

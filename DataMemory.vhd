@@ -23,20 +23,23 @@ architecture Behavioral of DataMemory is
 
 begin
 
-	-- Reading, writing and reseting are clock-synchronized
+	-- Reading, writing and resetting are clock-synchronized
 	process (clk)
 		begin
 			if clk'event and clk = '1' then
 				-- When RST is active on '0', the memory is reset to 0x00 values
 				if RST = '0' then
 					MEMORY <= (others => (others => '0'));
+					
 				else 
 					-- READ
 					if RW = '1' then
 						OUTPUT <= MEMORY(to_integer(unsigned(addr)));
-					-- WRITE
-					elsif RW = '0' then
+						
+					-- WRITE (elsif RW = '0')
+					else
 						MEMORY(to_integer(unsigned(addr))) <= DATA;
+						
 					end if;
 				end if;
 			end if;	

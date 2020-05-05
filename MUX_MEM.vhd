@@ -17,16 +17,16 @@ use work.constants.ALL;
 entity MUX_MEM is
 	
     Port (
-				CLK							: in 	STD_LOGIC;
-				
-				OPCODE_IN					: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);		--< The opcode which will define whether we will choose the 
-																																	--   OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN to output
-				
-				OPERAND_B_DIRECT_IN		: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The operand comming directly from the last pipeline
-				OPERAND_B_MEM_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The output of the memory unit
-				
-				OPERAND_B_OUT				: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)		--> The chosen output, whether OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN
-			);
+			CLK					: in 	STD_LOGIC;
+
+			OPCODE_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
+																																--   OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN to output
+
+			OPERAND_B_DIRECT_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The operand comming directly from the last pipeline
+			OPERAND_B_MEM_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The output of the memory unit
+
+			OPERAND_B_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)	--> The chosen output, whether OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN
+	);
 end MUX_MEM;
 
 architecture Behavioral of MUX_MEM is
@@ -37,7 +37,7 @@ begin
 		begin
 			if rising_edge(clk) then
 			
-				if OPCODE_IN = CONSTANT_OP_ADD or
+				if	OPCODE_IN = CONSTANT_OP_ADD or
 					OPCODE_IN = CONSTANT_OP_MUL or
 					OPCODE_IN = CONSTANT_OP_SUB or
 					OPCODE_IN = CONSTANT_OP_DIV

@@ -12,17 +12,16 @@ architecture Behavioral of MainProcessor is
 
 	signal GLOBAL_RST	: std_logic := '1';
 
-	------------------------------------------------
-	------					CLOCK						------
-	------------------------------------------------
-	
-   signal GLOBAL_CLK : std_logic := '0';
+	------------------------------------------
+	------				CLOCK			------
+	------------------------------------------
+	signal GLOBAL_CLK : std_logic := '0';
 	-- Clock period definitions
-   constant CLK_period : time := 10 ns;
+	constant CLK_period : time := 10 ns;
 
-	------------------------------------------------
-	------			InstructionMemory				------
-	------------------------------------------------
+	------------------------------------------
+	------		InstructionMemory		------
+	------------------------------------------
 	COMPONENT InstructionMemory
 		PORT(
 				CLK 		: IN  std_logic;
@@ -33,17 +32,17 @@ architecture Behavioral of MainProcessor is
    END COMPONENT;
     
 
-   -- Inputs
+	-- Inputs
 	signal InstructionMemory_CLK 	: std_logic := '0';
-   signal InstructionMemory_ADDR : std_logic_vector(7 downto 0) := (others => '0');
+	signal InstructionMemory_ADDR : std_logic_vector(7 downto 0) := (others => '0');
 
  	-- Outputs
-   signal InstructionMemory_OUTPUT : std_logic_vector(31 downto 0);
+	signal InstructionMemory_OUTPUT : std_logic_vector(31 downto 0);
 	
 	
-	------------------------------------------------
-	------					ALU						------
-	------------------------------------------------
+	------------------------------------------
+	------				ALU				------
+	------------------------------------------
 	COMPONENT ALU
     PORT(
          OPERAND_1	: IN  std_logic_vector(7 downto 0);
@@ -59,22 +58,22 @@ architecture Behavioral of MainProcessor is
     END COMPONENT;
     
 
-   --Inputs
-   signal ALU_OPERAND_1 : std_logic_vector(7 downto 0) := (others => '0');
-   signal ALU_OPERAND_2 : std_logic_vector(7 downto 0) := (others => '0');
-   signal ALU_ALU_CTRL 	: std_logic_vector(2 downto 0) := (others => '0');
+	--Inputs
+	signal ALU_OPERAND_1 : std_logic_vector(7 downto 0) 	:= (others => '0');
+	signal ALU_OPERAND_2 : std_logic_vector(7 downto 0) 	:= (others => '0');
+	signal ALU_ALU_CTRL 	: std_logic_vector(2 downto 0) 	:= (others => '0');
 
  	--Outputs
-   signal ALU_RESULT : std_logic_vector(7 downto 0);
-   signal ALU_NEG_FLAG : std_logic;
-   signal ALU_OVF_FLAG : std_logic;
-   signal ALU_ZER_FLAG : std_logic;
-   signal ALU_CAR_FLAG : std_logic;
+	signal ALU_RESULT : std_logic_vector(7 downto 0);
+	signal ALU_NEG_FLAG : std_logic;
+	signal ALU_OVF_FLAG : std_logic;
+	signal ALU_ZER_FLAG : std_logic;
+	signal ALU_CAR_FLAG : std_logic;
 
 
-	------------------------------------------------
-	------				DataMemory					------
-	------------------------------------------------
+	------------------------------------------
+	------			DataMemory			------
+	------------------------------------------
 	COMPONENT DataMemory
     PORT(
          ADDR		: IN  std_logic_vector(7 downto 0);
@@ -96,12 +95,12 @@ architecture Behavioral of MainProcessor is
 
  	--Outputs
    signal DataMemory_OUTPUT 	: std_logic_vector(7 downto 0);
-	
-	
-	
-	------------------------------------------------
-	------					MUX_DI					------
-	------------------------------------------------
+
+
+
+	------------------------------------------
+	------				MUX_DI			------
+	------------------------------------------
 	COMPONENT MUX_DI
     PORT(
          CLK 						: IN  std_logic;
@@ -115,7 +114,7 @@ architecture Behavioral of MainProcessor is
     
 
    --Inputs
-   signal MUX_DI_CLK 						: std_logic := '0';
+   signal MUX_DI_CLK					: std_logic := '0';
    signal MUX_DI_OPCODE_IN 				: std_logic_vector(7 downto 0) := (others => '0');
    signal MUX_DI_OPERAND_B_DIRECT_IN 	: std_logic_vector(7 downto 0) := (others => '0');
    signal MUX_DI_OPERAND_B_REG_IN 		: std_logic_vector(7 downto 0) := (others => '0');
@@ -125,9 +124,9 @@ architecture Behavioral of MainProcessor is
    
 
 begin
-	------------------------------------------------
-	------					Creation					------
-	------------------------------------------------
+	------------------------------------------
+	------			Creation			------
+	------------------------------------------
 	instruction_memory_object: InstructionMemory PORT MAP (
           CLK 		=> InstructionMemory_CLK,
           ADDR 	=> InstructionMemory_ADDR,
@@ -167,9 +166,9 @@ begin
         );
 		  
 		  
-	------------------------------------------------
-	------				Processing					------
-	------------------------------------------------
+	------------------------------------------
+	------			Processing			------
+	------------------------------------------
 	-- Synchronize all the RST's
 	DataMemory_RST	<= GLOBAL_RST;
 	-- Synchronize all CLK's

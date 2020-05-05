@@ -7,25 +7,25 @@ use work.constants.ALL;
 
 entity Pipeline is
     Port (
-				CLK					: in 	STD_LOGIC;
-				RST					: in	STD_LOGIC;
-				
-				OPERAND_A_IN		: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
-				
-				OPCODE_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);
-				
-				OPERAND_B_IN		: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
-				OPERAND_C_IN		: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
-				
-				
-				
-				OPERAND_A_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
-				
-				OPCODE_OUT			: out	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);
-				
-				OPERAND_B_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
-				OPERAND_C_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)
-			);
+			CLK				: in 	STD_LOGIC;
+			RST				: in	STD_LOGIC;
+			
+			OPERAND_A_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
+			
+			OPCODE_IN		: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);
+			
+			OPERAND_B_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
+			OPERAND_C_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
+			
+			
+			
+			OPERAND_A_OUT	: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
+			
+			OPCODE_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);
+			
+			OPERAND_B_OUT	: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);
+			OPERAND_C_OUT	: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)
+	);
 end Pipeline;
 
 architecture Behavioral of Pipeline is

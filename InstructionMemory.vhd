@@ -8,10 +8,10 @@ use work.constants.ALL;
 entity InstructionMemory is
 
     Port ( 
-				CLK 		: in  	STD_LOGIC;	--< CLK
-				ADDR 		: in  	STD_LOGIC_VECTOR (CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0);	--< The address of the instruction to be fetched
-				OUTPUT 	: out  	STD_LOGIC_VECTOR (CONSTANT_INSTRUCTION_SIZE - 1 downto 0)			--> The very fetched instruction
-			);
+			CLK 	: in  	STD_LOGIC;	--< CLK
+			ADDR 	: in  	STD_LOGIC_VECTOR (CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0);	--< The address of the instruction to be fetched
+			OUTPUT 	: out  	STD_LOGIC_VECTOR (CONSTANT_INSTRUCTION_SIZE - 1 downto 0)		--> The very fetched instruction
+	);
 end InstructionMemory;
 
 architecture Behavioral of InstructionMemory is

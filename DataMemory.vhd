@@ -7,12 +7,14 @@ use work.constants.ALL;
 
 entity DataMemory is
 	
-    Port ( ADDR 	: in  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_ADDR_SIZE - 1 downto 0);	--< The address of memory which will be read or overwritten
-           DATA 	: in  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0);	--< Data to be written into memory when RW = '0'
-           RW 		: in  	STD_LOGIC;								--< Flag : '1' to read from memory and '0' to write data to memory
-           RST 	: in  	STD_LOGIC;								--< Reset the memory to '0' when RST = '0'
-           CLK 	: in  	STD_LOGIC;								--< CLK
-           OUTPUT : out  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0));	--> Data read from memory (when RW = '1')
+    Port (
+			ADDR 	: in  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_ADDR_SIZE - 1 downto 0);	--< The address of memory which will be read or overwritten
+			DATA 	: in  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0);	--< Data to be written into memory when RW = '0'
+			RW 		: in  	STD_LOGIC;														--< Flag : '1' to read from memory and '0' to write data to memory
+			RST 	: in  	STD_LOGIC;														--< Reset the memory to '0' when RST = '0'
+			CLK 	: in  	STD_LOGIC;														--< CLK
+			OUTPUT	: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0)	--> Data read from memory (when RW = '1')
+	);	
 end DataMemory;
 
 architecture Behavioral of DataMemory is

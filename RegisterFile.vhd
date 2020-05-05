@@ -12,11 +12,11 @@ entity RegisterFile is
 			RST 			: in  	STD_LOGIC;												--< All the registers are set to '0' when RST is active on '0'
 			CLK 			: in  	STD_LOGIC;												--< CLK
 			  
-			READ_REG_ADDR0 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the first register to be read
-			READ_REG_ADDR1 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the second register to be read
+			READ_REG_ADDR_A : in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the first register to be read
+			READ_REG_ADDR_B : in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the second register to be read
 			  
-			Q0 				: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);		--> The data of the first register to be read
-			Q1 				: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);		--> The data of the second register to be read
+			QA 				: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);		--> The data of the first register to be read
+			QB 				: out  	STD_LOGIC_VECTOR (CONSTANT_DATA_SIZE - 1 downto 0);		--> The data of the second register to be read
 			  
 			WRITE_REQ 		: in  	STD_LOGIC;												--< Flag to be set to '1' when DATA must overwrite a register
 			WRITE_REG_ADDR 	: in  	STD_LOGIC_VECTOR (CONSTANT_REG_ADDR_SIZE - 1 downto 0);	--< The address of the register to be overwritten with DATA
@@ -33,13 +33,13 @@ architecture Behavioral of RegisterFile is
 begin
 	
 	-- Asynchronous reading
-	-- If one register is to be both read and overwritten, then we output the new data (Q0 <= DATA)
-	-- Otherwise it is a mild reading operation for the output Q0 and Q1
-	Q0 <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR0 = WRITE_REG_ADDR)) else
-		   REGISTERS(to_integer(unsigned(READ_REG_ADDR0)));
+	-- If one register is to be both read and overwritten, then we output the new data (QA <= DATA)
+	-- Otherwise it is a mild reading operation for the output QA and QB
+	QA <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR_A = WRITE_REG_ADDR)) else
+		   REGISTERS(to_integer(unsigned(READ_REG_ADDR_A)));
 			
-	Q1 <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR1 = WRITE_REG_ADDR)) else
-	      REGISTERS(to_integer(unsigned(READ_REG_ADDR1)));
+	QB <= DATA when ((WRITE_REQ='1') and (READ_REG_ADDR_B = WRITE_REG_ADDR)) else
+	      REGISTERS(to_integer(unsigned(READ_REG_ADDR_B)));
 
 	-- Synchronized writing
 	process (clk) 

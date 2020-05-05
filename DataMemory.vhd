@@ -35,10 +35,10 @@ begin
 					
 				else 
 					-- READ
-					if RW = '1' then
+					if RW = CONSTANT_DATA_MEMORY_READ_FLAG then
 						OUTPUT <= MEMORY(to_integer(unsigned(addr)));
 						
-					-- WRITE (elsif RW = '0')
+					-- WRITE (elsif RW = CONSTANT_DATA_MEMORY_WRITE_FLAG)
 					else
 						MEMORY(to_integer(unsigned(addr))) <= DATA;
 						

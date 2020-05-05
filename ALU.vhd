@@ -10,7 +10,7 @@ use work.constants.ALL;
 
 entity ALU is
 	generic (
-		msb 				: Natural := CONSTANT_OPERAND_SIZE - 1; -- Most Significant Bit position
+		msb					: Natural := CONSTANT_OPERAND_SIZE - 1; -- Most Significant Bit position
 		double_size			: Natural := CONSTANT_OPERAND_SIZE * 2;
 		zero_single_size	: STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 		zero_double_size 	: STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE * 2 - 1 downto 0) := (others => '0')

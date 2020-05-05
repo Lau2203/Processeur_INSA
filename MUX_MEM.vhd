@@ -5,11 +5,10 @@ use IEEE.NUMERIC_STD.ALL;
 library work;
 use work.constants.ALL;
 
--- This MUX receives 3 inputs : OPCODE_IN, OPERAND_B_DIRECT_IN and OPERAND_B_MEM_IN
+-- This MUX receives 3 inputs : OPCODE, OPERAND_A and OPERAND_B
 
--- The first of the OPERAND_* is a direct link to the previous pipeline,
--- whereas the second operand is the value of that same operand value once processed
--- through the Memory unit.
+-- OPERAND_A and OPERAND_B are a direct link to the previous pipeline
+-- .
 
 -- Basically, according to the value of the incoming OPCODE, it can choose to output
 -- whether the direct previous pipeline's value, or memory unit's result.
@@ -17,15 +16,15 @@ use work.constants.ALL;
 entity MUX_MEM is
 	
     Port (
-			CLK					: in 	STD_LOGIC;
+			CLK			: in 	STD_LOGIC;
 
-			OPCODE_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
-																																--   OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN to output
+			OPCODE		: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
+																						--   OPERAND_A or OPERAND_B to output
 
-			OPERAND_B_DIRECT_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The operand comming directly from the last pipeline
-			OPERAND_B_MEM_IN	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The output of the memory unit
+			OPERAND_A	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The first operand
+			OPERAND_B	: in	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0);	--< The second operand
 
-			OPERAND_B_OUT		: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)	--> The chosen output, whether OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN
+			OPERAND_OUT	: out	STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0)	--> The chosen output, whether OPERAND_A or OPERAND_B
 	);
 end MUX_MEM;
 
@@ -36,16 +35,18 @@ begin
 	process (clk)
 		begin
 			if rising_edge(clk) then
-			
-				if	OPCODE_IN = CONSTANT_OP_ADD or
-					OPCODE_IN = CONSTANT_OP_MUL or
-					OPCODE_IN = CONSTANT_OP_SUB or
-					OPCODE_IN = CONSTANT_OP_DIV
-				then
-					OPERAND_B_OUT <= OPERAND_B_MEM_IN;
+				-- Only the STORE opcode requires its first operand to be an address
+				if	OPCODE = CONSTANT_OP_STORE then
+					OPERAND_OUT <= OPERAND_A;
 					
+				-- CAREFUL ---
+				
+				-- Actually, the only other opcode that needs the B operand to be an address
+				-- is the LOAD opcode, but since there is another MUX right after the memory
+				-- we can do that 'else' process for every other instructions opcode
+				-- CAREFUL though when adding new instructions
 				else
-					OPERAND_B_OUT <= OPERAND_B_DIRECT_IN;
+					OPERAND_OUT <= OPERAND_B;
 				 
 				end if;
 			end if;

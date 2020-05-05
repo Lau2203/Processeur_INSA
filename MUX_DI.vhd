@@ -40,7 +40,9 @@ begin
 		begin
 			if rising_edge(clk) then
 			
-				if OPCODE_IN = CONSTANT_OP_AFC then
+				if 	OPCODE_IN = CONSTANT_OP_AFC or
+					OPCODE_IN = CONSTANT_OP_LOAD
+				then
 					OPERAND_B_OUT <= OPERAND_B_DIRECT_IN;
 					
 				else

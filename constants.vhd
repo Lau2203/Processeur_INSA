@@ -13,6 +13,9 @@ package constants is
 	constant CONSTANT_DATA_MEMORY_SLOT_SIZE	: Natural := CONSTANT_DATA_SIZE;
 	constant CONSTANT_DATA_MEMORY_ADDR_SIZE	: Natural := 8;
 
+	constant CONSTANT_DATA_MEMORY_READ_FLAG		: std_logic := '1';
+	constant CONSTANT_DATA_MEMORY_WRITE_FLAG	: std_logic := '0';
+
 
 	-- ASSEMBLY INSTRUCTIONS
 	constant CONSTANT_OPCODE_SIZE		: Natural := 8;
@@ -36,11 +39,14 @@ package constants is
 	constant CONSTANT_ALU_CTRL_SIZE	: Natural := 3;
 
 	constant CONSTANT_ALU_ADD	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "000";
-	constant CONSTANT_ALU_SUB	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "001";
-	constant CONSTANT_ALU_MUL	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "010";
-	constant CONSTANT_ALU_AND	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "011";
-	constant CONSTANT_ALU_XOR	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "100";
-	constant CONSTANT_ALU_OR	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "101";
+	constant CONSTANT_ALU_MUL	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "001";
+	constant CONSTANT_ALU_SUB	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "010";
+	constant CONSTANT_ALU_DIV	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "011";
+	constant CONSTANT_ALU_AND	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "100";
+	constant CONSTANT_ALU_XOR	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "101";
+	constant CONSTANT_ALU_OR	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "110";
+
+	constant CONSTANT_ALU_NONE	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := "111";
 	
 
 	-- OPCODES

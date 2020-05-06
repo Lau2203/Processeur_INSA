@@ -23,14 +23,14 @@ TODO :
 
   - MUX_DI								- OK
 
+
+  - MUX_EX								- OK
+  - MUX_MEM								- OK
+  - LC									- OK
+
+  - Chemin des données							- OK
+
 --------------------------------------------------------------------------------
-
-  - MUX_EX								- KO
-  - MUX_MEM								- KO
-  - LC									- KO
-
-  - Chemin des données							- KO
-
   - Gestion des aléas (optionnel)					- KO
 ```
 

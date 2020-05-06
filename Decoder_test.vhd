@@ -51,11 +51,11 @@ BEGIN
 	begin
 		wait for 100 ns;	
 
-		INSTRUCTION	<= x"09" & x"0f" & x"05" & CONSTANT_OP_ADD;
+		INSTRUCTION	<= CONSTANT_OP_ADD & x"09" & x"0f" & x"05";
 		
 		wait for 100 ns;	
 
-		INSTRUCTION	<= x"09" & x"0f" & x"05" & CONSTANT_OP_LOAD;
+		INSTRUCTION	<= CONSTANT_OP_LOAD & x"09" & x"0f" & x"05";
 		
 		wait for 100 ns;	
 

@@ -5,12 +5,7 @@ Laura Burlon--Roux & Aurélien Michaud
 TODO :
 
 ```
-	- Put LC_EX inside MainProcessor
-	- Put MEM_EX inside MainProcessor
-	- Put MEM_RE inside MainProcessor
-
-	- Implement a decoder and put it inside MainProcessor
-	- Implement LC_RE and put it inside MainProcessor
+	- Implement the IP component
 ```
 
 ```

@@ -17,8 +17,6 @@ use work.constants.ALL;
 entity MUX_RE is
 	
     Port (
-			CLK					: in 	STD_LOGIC;
-
 			OPCODE_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
 																																--   OPERAND_B_DIRECT_IN or OPERAND_B_MEM_IN to output
 
@@ -33,25 +31,14 @@ architecture Behavioral of MUX_RE is
 
 begin
 
-	process (clk)
-		begin
-			if rising_edge(clk) then
-				-- LOAD and STORE are the only two instructions that need a memory
-				-- address as one of their operand. However, the LOAD instruction is
-				-- probably the only one that would need to retrieve the result of the
-				-- the memory unit since it is a reading operation. Anyway, we assign
-				-- the memory unit for the STORE too, cannot do any harm.
-				if	OPCODE_IN = CONSTANT_OP_LOAD or
-					OPCODE_IN = CONSTANT_OP_STORE
-				then
-					OPERAND_B_OUT <= OPERAND_B_MEM_IN;
-					
-				else
-					OPERAND_B_OUT <= OPERAND_B_DIRECT_IN;
-				 
-				end if;
-			end if;
-		end process;
+-- LOAD and STORE are the only two instructions that need a memory
+-- address as one of their operand. However, the LOAD instruction is
+-- probably the only one that would need to retrieve the result of the
+-- the memory unit since it is a reading operation. Anyway, we assign
+-- the memory unit for the STORE too, cannot do any harm.
+OPERAND_B_OUT <=	OPERAND_B_MEM_IN when (OPCODE_IN = CONSTANT_OP_LOAD or OPCODE_IN = CONSTANT_OP_STORE) else
+					OPERAND_B_DIRECT_IN;
+
 
 end Behavioral;
 

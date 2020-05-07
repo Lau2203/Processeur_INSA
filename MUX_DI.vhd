@@ -20,8 +20,6 @@ use work.constants.ALL;
 entity MUX_DI is
 	
     Port (
-			CLK						: in 	STD_LOGIC;
-
 			OPCODE_IN				: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);		--< The opcode which will define whether we will choose the 
 																																--   OPERAND_B_DIRECT_IN or OPERAND_B_REG_IN to output
 
@@ -36,21 +34,8 @@ architecture Behavioral of MUX_DI is
 
 begin
 
-	process (clk)
-		begin
-			if rising_edge(clk) then
-			
-				if 	OPCODE_IN = CONSTANT_OP_AFC or
-					OPCODE_IN = CONSTANT_OP_LOAD
-				then
-					OPERAND_B_OUT <= OPERAND_B_DIRECT_IN;
-					
-				else
-					OPERAND_B_OUT <= OPERAND_B_REG_IN;
-				 
-				end if;
-			end if;
-		end process;
+OPERAND_B_OUT <=	OPERAND_B_DIRECT_IN when (OPCODE_IN = CONSTANT_OP_AFC or OPCODE_IN = CONSTANT_OP_LOAD) else
+					OPERAND_B_REG_IN;
 
 end Behavioral;
 

@@ -7,6 +7,11 @@ use work.constants.ALL;
 entity MainProcessor is
 	port (
 		MainProcessor_CLK		: in 	std_logic;
+		MainProcessor_RST		: in 	std_logic;
+		MainProcessor_P1		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
+		MainProcessor_P2		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
+		MainProcessor_P3		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
+		MainProcessor_P4		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
 		MainProcessor_OUTPUT	: out	std_logic
 	);
 end MainProcessor;
@@ -15,13 +20,6 @@ architecture Behavioral of MainProcessor is
 
 	signal GLOBAL_RST	: std_logic := '1';
 
-	------------------------------------------
-	------				CLOCK			------
-	------------------------------------------
-	signal GLOBAL_CLK : std_logic := '0';
-	-- Clock period definitions
-	constant CLK_period : time := 10 ns;
-	
 	
 	------------------------------------------
 	------				Pipeline		------
@@ -124,6 +122,27 @@ architecture Behavioral of MainProcessor is
 	signal Pipeline_MEM_RE_OPCODE_OUT		: STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0) := (others => '0');
 	signal Pipeline_MEM_RE_OPERAND_B_OUT	: STD_LOGIC_VECTOR (CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 	
+	
+	------------------------------------------
+	------				IP				------
+	------------------------------------------
+	COMPONENT IP
+	PORT(
+			CLK 	: IN	std_logic;
+			RST		: IN 	std_logic;
+
+			ADDR 	: OUT	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0)
+	);
+	END COMPONENT;
+
+
+	--Inputs
+	signal IP_CLK 	: std_logic := '0';
+	signal IP_RST 	: std_logic := '0';
+
+	--Outputs
+	signal IP_ADDR 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
+	
 
 	COMPONENT Decoder
 	PORT(
@@ -152,19 +171,19 @@ architecture Behavioral of MainProcessor is
 	COMPONENT InstructionMemory
 		PORT(
 				CLK 	: IN	std_logic;
-				ADDR 	: IN	std_logic_vector(7 downto 0);
+				ADDR 	: IN	std_logic_vector(CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0);
 				
-				OUTPUT 	: OUT	std_logic_vector(31 downto 0)
+				OUTPUT 	: OUT	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0)
 			  );
    END COMPONENT;
     
 
 	-- Inputs
 	signal InstructionMemory_CLK 	: std_logic := '0';
-	signal InstructionMemory_ADDR	: std_logic_vector(7 downto 0) := (others => '0');
+	signal InstructionMemory_ADDR	: std_logic_vector(CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0) := (others => '0');
 
  	-- Outputs
-	signal InstructionMemory_OUTPUT : std_logic_vector(31 downto 0);
+	signal InstructionMemory_OUTPUT : std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
 	
 	
 	------------------------------------------
@@ -172,15 +191,15 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT RegisterFile
 	PORT(
-			RST 			: IN  std_logic;
-			CLK 			: IN  std_logic;
-			READ_REG_ADDR_A : IN  std_logic_vector(3 downto 0);
-			READ_REG_ADDR_B	: IN  std_logic_vector(3 downto 0);
-			QA 				: OUT  std_logic_vector(7 downto 0);
-			QB 				: OUT  std_logic_vector(7 downto 0);
-			WRITE_REQ 		: IN  std_logic;
-			WRITE_REG_ADDR	: IN  std_logic_vector(3 downto 0);
-			DATA 			: IN  std_logic_vector(7 downto 0)
+			RST 			: IN	std_logic;
+			CLK 			: IN	std_logic;
+			READ_REG_ADDR_A : IN	std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0);
+			READ_REG_ADDR_B	: IN	std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0);
+			QA 				: OUT	std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0);
+			QB 				: OUT	std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0);
+			WRITE_REQ 		: IN	std_logic;
+			WRITE_REG_ADDR	: IN	std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0);
+			DATA 			: IN	std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0)
 		);
 	END COMPONENT;
     
@@ -188,15 +207,15 @@ architecture Behavioral of MainProcessor is
 	--Inputs
 	signal RegisterFile_RST 			: std_logic := '0';
 	signal RegisterFile_CLK 			: std_logic := '0';
-	signal RegisterFile_READ_REG_ADDR_A : std_logic_vector(3 downto 0) := (others => '0');
-	signal RegisterFile_READ_REG_ADDR_B : std_logic_vector(3 downto 0) := (others => '0');
+	signal RegisterFile_READ_REG_ADDR_A : std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0) := (others => '0');
+	signal RegisterFile_READ_REG_ADDR_B : std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0) := (others => '0');
 	signal RegisterFile_WRITE_REQ 		: std_logic := '0';
-	signal RegisterFile_WRITE_REG_ADDR 	: std_logic_vector(3 downto 0) := (others => '0');
-	signal RegisterFile_DATA 			: std_logic_vector(7 downto 0) := (others => '0');
+	signal RegisterFile_WRITE_REG_ADDR 	: std_logic_vector(CONSTANT_REG_ADDR_SIZE - 1 downto 0) := (others => '0');
+	signal RegisterFile_DATA 			: std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0) := (others => '0');
 
 	--Outputs
-	signal RegisterFile_QA : std_logic_vector(7 downto 0);
-	signal RegisterFile_QB : std_logic_vector(7 downto 0);
+	signal RegisterFile_QA : std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0);
+	signal RegisterFile_QB : std_logic_vector(CONSTANT_DATA_SIZE - 1 downto 0);
 	
 	
 	------------------------------------------
@@ -204,7 +223,6 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT MUX_DI
 	PORT(
-			CLK 					: IN	std_logic;
 			OPCODE_IN 				: IN	std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0);
 			OPERAND_B_DIRECT_IN 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
 			OPERAND_B_REG_IN 		: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
@@ -215,7 +233,6 @@ architecture Behavioral of MainProcessor is
 
 
 	--Inputs
-	signal MUX_DI_CLK					: std_logic := '0';
 	signal MUX_DI_OPCODE_IN 			: std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_DI_OPERAND_B_DIRECT_IN 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_DI_OPERAND_B_REG_IN 		: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
@@ -248,11 +265,11 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT ALU
     PORT(
-         OPERAND_1	: IN	std_logic_vector(7 downto 0);
-         OPERAND_2 	: IN	std_logic_vector(7 downto 0);
-         ALU_CTRL 	: IN 	std_logic_vector(2 downto 0);
+         OPERAND_1	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
+         OPERAND_2 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
+         ALU_CTRL 	: IN 	std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0);
 			
-         RESULT 	: OUT	std_logic_vector(7 downto 0);
+         RESULT 	: OUT	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
          NEG_FLAG 	: OUT	std_logic;
          OVF_FLAG 	: OUT	std_logic;
          ZER_FLAG 	: OUT	std_logic;
@@ -262,12 +279,12 @@ architecture Behavioral of MainProcessor is
     
 
 	--Inputs
-	signal ALU_OPERAND_1 	: std_logic_vector(7 downto 0) 	:= (others => '0');
-	signal ALU_OPERAND_2 	: std_logic_vector(7 downto 0) 	:= (others => '0');
-	signal ALU_ALU_CTRL 	: std_logic_vector(2 downto 0) 	:= (others => '0');
+	signal ALU_OPERAND_1 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) 	:= (others => '0');
+	signal ALU_OPERAND_2 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) 	:= (others => '0');
+	signal ALU_ALU_CTRL 	: std_logic_vector(CONSTANT_ALU_CTRL_SIZE - 1 downto 0) := (others => '0');
 
  	--Outputs
-	signal ALU_RESULT	: std_logic_vector(7 downto 0);
+	signal ALU_RESULT	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
 	signal ALU_NEG_FLAG : std_logic;
 	signal ALU_OVF_FLAG : std_logic;
 	signal ALU_ZER_FLAG : std_logic;
@@ -279,7 +296,6 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT MUX_EX
 	PORT(
-			CLK 					: IN	std_logic;
 			OPCODE_IN 				: IN	std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0);
 			OPERAND_B_DIRECT_IN 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
 			OPERAND_B_ALU_IN 		: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
@@ -290,7 +306,6 @@ architecture Behavioral of MainProcessor is
 
 
 	--Inputs
-	signal MUX_EX_CLK					: std_logic := '0';
 	signal MUX_EX_OPCODE_IN 			: std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_EX_OPERAND_B_DIRECT_IN 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_EX_OPERAND_B_ALU_IN 		: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
@@ -307,7 +322,6 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT MUX_MEM
 	PORT(
-			CLK 		: IN	std_logic;
 			OPCODE 		: IN	std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0);
 			OPERAND_A 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
 			OPERAND_B 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
@@ -318,7 +332,6 @@ architecture Behavioral of MainProcessor is
 
 
 	--Inputs
-	signal MUX_MEM_CLK			: std_logic := '0';
 	signal MUX_MEM_OPCODE 		: std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_MEM_OPERAND_A 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_MEM_OPERAND_B 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
@@ -349,33 +362,32 @@ architecture Behavioral of MainProcessor is
 	------------------------------------------
 	COMPONENT DataMemory
 	PORT(
-			ADDR	: IN	std_logic_vector(7 downto 0);
-			DATA 	: IN	std_logic_vector(7 downto 0);
+			ADDR	: IN	std_logic_vector(CONSTANT_DATA_MEMORY_ADDR_SIZE - 1 downto 0);
+			DATA 	: IN	std_logic_vector(CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0);
 			RW 		: IN	std_logic;
 			RST 	: IN	std_logic;
 			CLK 	: IN	std_logic;
 
-			OUTPUT	: OUT	std_logic_vector(7 downto 0)
+			OUTPUT	: OUT	std_logic_vector(CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0)
 		);
 	END COMPONENT;
 
 
 	--Inputs
-	signal DataMemory_ADDR 		: std_logic_vector(7 downto 0) := (others => '0');
-	signal DataMemory_DATA 		: std_logic_vector(7 downto 0) := (others => '0');
+	signal DataMemory_ADDR 		: std_logic_vector(CONSTANT_DATA_MEMORY_ADDR_SIZE - 1 downto 0) := (others => '0');
+	signal DataMemory_DATA 		: std_logic_vector(CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0) := (others => '0');
 	signal DataMemory_RW 		: std_logic := '0';
 	signal DataMemory_RST 		: std_logic := '0';
 	signal DataMemory_CLK 		: std_logic := '0';
 
 	--Outputs
-	signal DataMemory_OUTPUT 	: std_logic_vector(7 downto 0);
+	signal DataMemory_OUTPUT 	: std_logic_vector(CONSTANT_DATA_MEMORY_SLOT_SIZE - 1 downto 0);
 	
 	------------------------------------------
 	------				MUX_RE			------
 	------------------------------------------
 	COMPONENT MUX_RE
 	PORT(
-			CLK 					: IN	std_logic;
 			OPCODE_IN 				: IN	std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0);
 			OPERAND_B_DIRECT_IN 	: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
 			OPERAND_B_MEM_IN 		: IN	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
@@ -386,7 +398,6 @@ architecture Behavioral of MainProcessor is
 
 
 	--Inputs
-	signal MUX_RE_CLK					: std_logic := '0';
 	signal MUX_RE_OPCODE_IN 			: std_logic_vector(CONSTANT_OPCODE_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_RE_OPERAND_B_DIRECT_IN 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
 	signal MUX_RE_OPERAND_B_MEM_IN 		: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0) := (others => '0');
@@ -487,13 +498,19 @@ begin
 			OPERAND_B_OUT	=> Pipeline_MEM_RE_OPERAND_B_OUT
 	);
 	
+	ip_object: IP PORT MAP(
+			CLK		=> IP_CLK,
+			RST		=> IP_RST,
+			
+			ADDR	=> IP_ADDR
+	);
+	
 	instruction_memory_object: InstructionMemory PORT MAP (
 			CLK		=> InstructionMemory_CLK,
 			ADDR	=> InstructionMemory_ADDR,
 			 
 			OUTPUT	=> InstructionMemory_OUTPUT
     );
-		
 		
 		
 	register_file_object: RegisterFile PORT MAP (
@@ -510,7 +527,6 @@ begin
 		
 		  
 	mux_di_object: MUX_DI PORT MAP (
-			CLK 				=> MUX_DI_CLK,
 			OPCODE_IN 			=> MUX_DI_OPCODE_IN,
 			OPERAND_B_DIRECT_IN	=> MUX_DI_OPERAND_B_DIRECT_IN,
 			OPERAND_B_REG_IN	=> MUX_DI_OPERAND_B_REG_IN,
@@ -537,7 +553,6 @@ begin
 	);
 
 	mux_ex_object: MUX_EX PORT MAP (
-			CLK 				=> MUX_EX_CLK,
 			OPCODE_IN 			=> MUX_EX_OPCODE_IN,
 			OPERAND_B_DIRECT_IN	=> MUX_EX_OPERAND_B_DIRECT_IN,
 			OPERAND_B_ALU_IN	=> MUX_EX_OPERAND_B_ALU_IN,
@@ -546,7 +561,6 @@ begin
 	);
 		  
 	mux_mem_object: MUX_MEM PORT MAP (
-			CLK 		=> MUX_MEM_CLK,
 			OPCODE 		=> MUX_MEM_OPCODE,
 			OPERAND_A	=> MUX_MEM_OPERAND_A,
 			OPERAND_B	=> MUX_MEM_OPERAND_B,
@@ -571,7 +585,6 @@ begin
 	);
 	
 	mux_re_object: MUX_RE PORT MAP (
-			CLK 				=> MUX_RE_CLK,
 			OPCODE_IN 			=> MUX_RE_OPCODE_IN,
 			OPERAND_B_DIRECT_IN	=> MUX_RE_OPERAND_B_DIRECT_IN,
 			OPERAND_B_MEM_IN	=> MUX_RE_OPERAND_B_MEM_IN,
@@ -592,28 +605,34 @@ begin
 	------------------------------------------
 	
 	-- Synchronize all the RST's
-	RegisterFile_RST	<= GLOBAL_RST;
-	DataMemory_RST		<= GLOBAL_RST;
+	RegisterFile_RST	<= MainProcessor_RST;
+	DataMemory_RST		<= MainProcessor_RST;
+	IP_RST				<= MainProcessor_RST;
+	
+	Pipeline_LI_DI_RST		<= MainProcessor_RST;
+	Pipeline_DI_EX_RST		<= MainProcessor_RST;
+	Pipeline_EX_MEM_RST		<= MainProcessor_RST;
+	Pipeline_MEM_RE_RST		<= MainProcessor_RST;
 	
 	-- Synchronize all CLK's
-	Pipeline_LI_DI_CLK		<= GLOBAL_CLK;
-	Pipeline_DI_EX_CLK		<= GLOBAL_CLK;
-	Pipeline_EX_MEM_CLK		<= GLOBAL_CLK;
-	Pipeline_MEM_RE_CLK		<= GLOBAL_CLK;
 	
-	InstructionMemory_CLK	<= GLOBAL_CLK;
-	RegisterFile_CLK		<= GLOBAL_CLK;
-	DataMemory_CLK			<= GLOBAL_CLK;
+	Pipeline_LI_DI_CLK		<= MainProcessor_CLK;
+	Pipeline_DI_EX_CLK		<= MainProcessor_CLK;
+	Pipeline_EX_MEM_CLK		<= MainProcessor_CLK;
+	Pipeline_MEM_RE_CLK		<= MainProcessor_CLK;
 	
-	MUX_DI_CLK				<= GLOBAL_CLK;
-	MUX_EX_CLK				<= GLOBAL_CLK;
-	MUX_MEM_CLK				<= GLOBAL_CLK;
-	MUX_RE_CLK				<= GLOBAL_CLK;
+	IP_CLK					<= MainProcessor_CLK;
+	
+	InstructionMemory_CLK	<= MainProcessor_CLK;
+	RegisterFile_CLK		<= MainProcessor_CLK;
+	DataMemory_CLK			<= MainProcessor_CLK;
 	
 	
 	----------- BGN LEVEL LI ----------- 
 	
 	-- FIXME : Instruction Memory
+	
+	InstructionMemory_ADDR	<= IP_ADDR;
 	
 	Decoder_INSTRUCTION	<= InstructionMemory_OUTPUT;
 	
@@ -649,6 +668,7 @@ begin
 	Pipeline_DI_EX_OPCODE_IN	<= Pipeline_LI_DI_OPCODE_OUT;
 	Pipeline_DI_EX_OPERAND_B_IN	<= MUX_DI_OPERAND_B_OUT;
 	Pipeline_DI_EX_OPERAND_C_IN	<= RegisterFile_QB;
+	
 	
 	
 	----------- BGN LEVEL EX -----------
@@ -712,6 +732,11 @@ begin
 	-- leave that here for the moment
 	MainProcessor_OUTPUT <= '0' when MainProcessor_CLK = '0' else
 							'1';
-
+	
+	MainProcessor_P1 <= Pipeline_LI_DI_OPCODE_OUT & Pipeline_LI_DI_OPERAND_A_OUT & Pipeline_LI_DI_OPERAND_B_OUT & Pipeline_LI_DI_OPERAND_C_OUT;
+	MainProcessor_P2 <= Pipeline_DI_EX_OPCODE_OUT & Pipeline_DI_EX_OPERAND_A_OUT & Pipeline_DI_EX_OPERAND_B_OUT & Pipeline_DI_EX_OPERAND_C_OUT;
+	MainProcessor_P3 <= Pipeline_EX_MEM_OPCODE_OUT & Pipeline_EX_MEM_OPERAND_A_OUT & Pipeline_EX_MEM_OPERAND_B_OUT & x"00";
+	MainProcessor_P4 <= Pipeline_MEM_RE_OPCODE_OUT & Pipeline_MEM_RE_OPERAND_A_OUT & Pipeline_MEM_RE_OPERAND_B_OUT & x"00";
+ 
 end Behavioral;
 

@@ -16,8 +16,6 @@ use work.constants.ALL;
 entity MUX_MEM is
 	
     Port (
-			CLK			: in 	STD_LOGIC;
-
 			OPCODE		: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
 																						--   OPERAND_A or OPERAND_B to output
 
@@ -32,25 +30,14 @@ architecture Behavioral of MUX_MEM is
 
 begin
 
-	process (clk)
-		begin
-			if rising_edge(clk) then
-				-- Only the STORE opcode requires its first operand to be an address
-				if	OPCODE = CONSTANT_OP_STORE then
-					OPERAND_OUT <= OPERAND_A;
-					
-				-- CAREFUL ---
+-- Only the STORE opcode requires its first operand to be an address
+OPERAND_OUT <= 	OPERAND_A when OPCODE = CONSTANT_OP_STORE else
+				OPERAND_B;
+-- CAREFUL ---
+-- Actually, the only other opcode that needs the B operand to be an address
+-- is the LOAD opcode, but since there is another MUX right after the memory
+-- we can do that 'else' process for every other instructions opcode
+-- CAREFUL though when adding new instructions
 				
-				-- Actually, the only other opcode that needs the B operand to be an address
-				-- is the LOAD opcode, but since there is another MUX right after the memory
-				-- we can do that 'else' process for every other instructions opcode
-				-- CAREFUL though when adding new instructions
-				else
-					OPERAND_OUT <= OPERAND_B;
-				 
-				end if;
-			end if;
-		end process;
-
 end Behavioral;
 

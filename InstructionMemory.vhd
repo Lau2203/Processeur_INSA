@@ -22,6 +22,18 @@ architecture Behavioral of InstructionMemory is
 	
 begin
 
+	INSTR_MEMORY	<= (
+						CONSTANT_OP_AFC & x"05" & x"06" & x"09",
+						CONSTANT_OP_AFC & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_ADD & x"06" & x"05" & x"09",
+						others => (others => '0')
+						);
+
 	process (clk)
 		begin
 			if clk'event and clk = '1' then

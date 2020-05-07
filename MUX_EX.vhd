@@ -17,8 +17,6 @@ use work.constants.ALL;
 entity MUX_EX is
 	
     Port (
-			CLK					: in 	STD_LOGIC;
-
 			OPCODE_IN			: in	STD_LOGIC_VECTOR (CONSTANT_OPCODE_SIZE - 1 downto 0);	--< The opcode which will define whether we will choose the 
 																																--   OPERAND_B_DIRECT_IN or OPERAND_B_ALU_IN to output
 
@@ -33,23 +31,16 @@ architecture Behavioral of MUX_EX is
 
 begin
 
-	process (clk)
-		begin
-			if rising_edge(clk) then
-				-- Only arithmetic and logic opcodes needs the ALU's result
-				if	OPCODE_IN = CONSTANT_OP_ADD or
-					OPCODE_IN = CONSTANT_OP_MUL or
-					OPCODE_IN = CONSTANT_OP_SUB or
-					OPCODE_IN = CONSTANT_OP_DIV
-				then
-					OPERAND_B_OUT <= OPERAND_B_ALU_IN;
-					
-				else
-					OPERAND_B_OUT <= OPERAND_B_DIRECT_IN;
-				 
-				end if;
-			end if;
-		end process;
+-- Only arithmetic and logic opcodes needs the ALU's result
+
+OPERAND_B_OUT <= 	OPERAND_B_ALU_IN when 	OPCODE_IN = CONSTANT_OP_ADD or
+											OPCODE_IN = CONSTANT_OP_MUL or
+											OPCODE_IN = CONSTANT_OP_SUB or
+											OPCODE_IN = CONSTANT_OP_DIV
+											else
+					OPERAND_B_DIRECT_IN;				
+
+
 
 end Behavioral;
 

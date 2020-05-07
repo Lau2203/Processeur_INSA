@@ -2,12 +2,6 @@
 
 Laura Burlon--Roux & Aurélien Michaud
 
-TODO :
-
-```
-	- Implement the IP component
-```
-
 ```
 ----------------------------------- AVANCEE ------------------------------------
 

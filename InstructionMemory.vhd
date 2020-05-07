@@ -21,22 +21,49 @@ architecture Behavioral of InstructionMemory is
 	signal INSTR_MEMORY : instr_mem_type;
 	
 begin
-
+	-- Test sample
 	INSTR_MEMORY	<= (
-						CONSTANT_OP_AFC & x"05" & x"06" & x"09",
-						CONSTANT_OP_AFC & x"09" & x"04" & x"09",
+						CONSTANT_OP_AFC & x"05" & x"06" & x"09",	-- r5 = 0x6;
+						CONSTANT_OP_AFC & x"09" & x"04" & x"09",	-- r9 = 0x4;
+						
 						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
 						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
 						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
 						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
 						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
-						CONSTANT_OP_ADD & x"06" & x"05" & x"09",
+						
+						CONSTANT_OP_MUL & x"06" & x"05" & x"09",	-- r6 = r5 * r9;
+						
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						
+						CONSTANT_OP_STORE & x"08" & x"06" & x"09",	-- [@0x8] = r6;
+						
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						
+						CONSTANT_OP_LOAD & x"01" & x"08" & x"09",	-- r1 = [@0x8];
+						
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						CONSTANT_OP_NOP & x"09" & x"04" & x"09",
+						
+						CONSTANT_OP_COP & x"07" & x"01" & x"09",	-- r7 = r1;
+						
 						others => (others => '0')
 						);
 
 	process (clk)
 		begin
-			if clk'event and clk = '1' then
+			if rising_edge(clk) then
 				OUTPUT <= INSTR_MEMORY(to_integer(unsigned(ADDR)));
 			end if;
 	end process;

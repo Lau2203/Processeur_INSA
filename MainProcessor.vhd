@@ -8,6 +8,7 @@ entity MainProcessor is
 	port (
 		MainProcessor_CLK		: in 	std_logic;
 		MainProcessor_RST		: in 	std_logic;
+		-- For a direct visualization of each pipeline
 		MainProcessor_P1		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
 		MainProcessor_P2		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
 		MainProcessor_P3		: out	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0);
@@ -605,9 +606,9 @@ begin
 	------------------------------------------
 	
 	-- Synchronize all the RST's
-	RegisterFile_RST	<= MainProcessor_RST;
-	DataMemory_RST		<= MainProcessor_RST;
-	IP_RST				<= MainProcessor_RST;
+	IP_RST					<= MainProcessor_RST;
+	RegisterFile_RST		<= MainProcessor_RST;
+	DataMemory_RST			<= MainProcessor_RST;
 	
 	Pipeline_LI_DI_RST		<= MainProcessor_RST;
 	Pipeline_DI_EX_RST		<= MainProcessor_RST;
@@ -615,14 +616,12 @@ begin
 	Pipeline_MEM_RE_RST		<= MainProcessor_RST;
 	
 	-- Synchronize all CLK's
-	
 	Pipeline_LI_DI_CLK		<= MainProcessor_CLK;
 	Pipeline_DI_EX_CLK		<= MainProcessor_CLK;
 	Pipeline_EX_MEM_CLK		<= MainProcessor_CLK;
 	Pipeline_MEM_RE_CLK		<= MainProcessor_CLK;
 	
 	IP_CLK					<= MainProcessor_CLK;
-	
 	InstructionMemory_CLK	<= MainProcessor_CLK;
 	RegisterFile_CLK		<= MainProcessor_CLK;
 	DataMemory_CLK			<= MainProcessor_CLK;
@@ -675,7 +674,6 @@ begin
 	
 	LC_EX_OPCODE	<= Pipeline_DI_EX_OPCODE_OUT;
 	
-	
 	ALU_OPERAND_1	<= Pipeline_DI_EX_OPERAND_B_OUT;
 	ALU_OPERAND_2	<= Pipeline_DI_EX_OPERAND_C_OUT;
 	ALU_ALU_CTRL	<= LC_EX_ALU_CTRL;
@@ -699,7 +697,6 @@ begin
 	MUX_MEM_OPCODE		<= Pipeline_EX_MEM_OPCODE_OUT;
 	MUX_MEM_OPERAND_A	<= Pipeline_EX_MEM_OPERAND_A_OUT;
 	MUX_MEM_OPERAND_B	<= Pipeline_EX_MEM_OPERAND_B_OUT;
-	
 	
 	LC_MEM_OPCODE	<= Pipeline_EX_MEM_OPCODE_OUT;
 	
@@ -733,10 +730,10 @@ begin
 	MainProcessor_OUTPUT <= '0' when MainProcessor_CLK = '0' else
 							'1';
 	
-	MainProcessor_P1 <= Pipeline_LI_DI_OPCODE_OUT & Pipeline_LI_DI_OPERAND_A_OUT & Pipeline_LI_DI_OPERAND_B_OUT & Pipeline_LI_DI_OPERAND_C_OUT;
-	MainProcessor_P2 <= Pipeline_DI_EX_OPCODE_OUT & Pipeline_DI_EX_OPERAND_A_OUT & Pipeline_DI_EX_OPERAND_B_OUT & Pipeline_DI_EX_OPERAND_C_OUT;
-	MainProcessor_P3 <= Pipeline_EX_MEM_OPCODE_OUT & Pipeline_EX_MEM_OPERAND_A_OUT & Pipeline_EX_MEM_OPERAND_B_OUT & x"00";
-	MainProcessor_P4 <= Pipeline_MEM_RE_OPCODE_OUT & Pipeline_MEM_RE_OPERAND_A_OUT & Pipeline_MEM_RE_OPERAND_B_OUT & x"00";
+	MainProcessor_P1 <= Pipeline_LI_DI_OPCODE_OUT	& Pipeline_LI_DI_OPERAND_A_OUT	& Pipeline_LI_DI_OPERAND_B_OUT	& Pipeline_LI_DI_OPERAND_C_OUT;
+	MainProcessor_P2 <= Pipeline_DI_EX_OPCODE_OUT	& Pipeline_DI_EX_OPERAND_A_OUT	& Pipeline_DI_EX_OPERAND_B_OUT	& Pipeline_DI_EX_OPERAND_C_OUT;
+	MainProcessor_P3 <= Pipeline_EX_MEM_OPCODE_OUT	& Pipeline_EX_MEM_OPERAND_A_OUT & Pipeline_EX_MEM_OPERAND_B_OUT & x"00";
+	MainProcessor_P4 <= Pipeline_MEM_RE_OPCODE_OUT	& Pipeline_MEM_RE_OPERAND_A_OUT & Pipeline_MEM_RE_OPERAND_B_OUT & x"00";
  
 end Behavioral;
 

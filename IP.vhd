@@ -10,6 +10,7 @@ entity IP is
 	Port(
 		CLK		: in	STD_LOGIC;
 		RST		: in	STD_LOGIC;
+		EN		: in	STD_LOGIC;
 		
 		ADDR	: out  	STD_LOGIC_VECTOR (CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0)
 	);
@@ -24,12 +25,22 @@ begin
 	process(clk)
 	begin
 		if falling_edge(clk) then
-			if RST = '0' then
-				currentADDR <= (others => '0');
+		
+			if EN = '1' then
+			
+				if RST = '0' then
+					currentADDR <= (others => '0');
+				else
+					currentADDR <= currentADDR + 1;
+				end if;
+				
 			else
-				currentADDR <= currentADDR + 1;
+				currentADDR	<= currentADDR;
+				
 			end if;
+			
 			ADDR <= currentADDR;
+			
 		end if;
 	end process;
 

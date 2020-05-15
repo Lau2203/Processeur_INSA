@@ -14,7 +14,7 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="8" />
+   <WVObjectSize size="9" />
    <wvobject fp_name="/mainprocessor_test/mainprocessor_clk" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mainprocessor_clk</obj_property>
       <obj_property name="ObjectShortName">mainprocessor_clk</obj_property>
@@ -22,6 +22,10 @@
    <wvobject fp_name="/mainprocessor_test/mainprocessor_rst" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">mainprocessor_rst</obj_property>
       <obj_property name="ObjectShortName">mainprocessor_rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/mainprocessor_test/uut/ip_object/en" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">en</obj_property>
+      <obj_property name="ObjectShortName">en</obj_property>
    </wvobject>
    <wvobject fp_name="group62" type="group">
       <obj_property name="label">P_LI_DI</obj_property>
@@ -46,48 +50,56 @@
          <obj_property name="ObjectShortName">operand_a_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/opcode_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/operand_b_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/operand_c_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/operand_a_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/opcode_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/operand_b_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_li_di_object/operand_c_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#0000ff</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group73" type="group">
@@ -111,48 +123,56 @@
          <obj_property name="ObjectShortName">operand_a_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/opcode_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/operand_b_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/operand_c_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/operand_a_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/opcode_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/operand_b_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_di_ex_object/operand_c_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ffff00</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group84" type="group">
@@ -176,48 +196,56 @@
          <obj_property name="ObjectShortName">operand_a_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/opcode_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/operand_b_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/operand_c_in" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_in[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/operand_a_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_a_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/opcode_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">opcode_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">opcode_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/operand_b_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_b_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject fp_name="/mainprocessor_test/uut/pipeline_ex_mem_object/operand_c_out" type="array" db_ref_id="1">
          <obj_property name="ElementShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="ObjectShortName">operand_c_out[7:0]</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
          <obj_property name="CustomSignalColor">#ff0000</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject fp_name="group95" type="group">

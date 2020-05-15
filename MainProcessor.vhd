@@ -1,5 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 library work;
 use work.constants.ALL;
@@ -23,7 +25,7 @@ architecture Behavioral of MainProcessor is
 
 	
 	------------------------------------------
-	------				Pipeline		------
+	------			Pipeline			------
 	------------------------------------------
 	COMPONENT Pipeline
 		PORT(
@@ -131,6 +133,7 @@ architecture Behavioral of MainProcessor is
 	PORT(
 			CLK 	: IN	std_logic;
 			RST		: IN 	std_logic;
+			EN		: IN 	std_logic;
 
 			ADDR 	: OUT	std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0)
 	);
@@ -140,6 +143,7 @@ architecture Behavioral of MainProcessor is
 	--Inputs
 	signal IP_CLK 	: std_logic := '0';
 	signal IP_RST 	: std_logic := '0';
+	signal IP_EN 	: std_logic := '1';
 
 	--Outputs
 	signal IP_ADDR 	: std_logic_vector(CONSTANT_OPERAND_SIZE - 1 downto 0);
@@ -426,6 +430,11 @@ architecture Behavioral of MainProcessor is
 	-- Outputs
 	signal LC_RE_WRITE_REQ	: std_logic := CONSTANT_REG_WRITE_FLAG_OFF;
    
+   
+   
+	type data_hazard_table_type is array (0 to CONSTANT_REG_NB - 1) of STD_LOGIC_VECTOR (4 - 1 downto 0); -- We need to be able to put a '4' value since there are 4 in-between pipelines
+	shared variable data_hazard_table : data_hazard_table_type := (others => (others => '0'));
+
 
 begin
 	------------------------------------------
@@ -502,6 +511,7 @@ begin
 	ip_object: IP PORT MAP(
 			CLK		=> IP_CLK,
 			RST		=> IP_RST,
+			EN		=> IP_EN,
 			
 			ADDR	=> IP_ADDR
 	);
@@ -628,8 +638,8 @@ begin
 	
 	
 	----------- BGN LEVEL LI ----------- 
-	
-	-- FIXME : Instruction Memory
+	-- Enable IP counter
+	--IP_EN	<= '1';
 	
 	InstructionMemory_ADDR	<= IP_ADDR;
 	
@@ -664,7 +674,7 @@ begin
 	
 	
 	Pipeline_DI_EX_OPERAND_A_IN	<= Pipeline_LI_DI_OPERAND_A_OUT;
-	Pipeline_DI_EX_OPCODE_IN	<= Pipeline_LI_DI_OPCODE_OUT;
+	--Pipeline_DI_EX_OPCODE_IN	<= Pipeline_LI_DI_OPCODE_OUT;
 	Pipeline_DI_EX_OPERAND_B_IN	<= MUX_DI_OPERAND_B_OUT;
 	Pipeline_DI_EX_OPERAND_C_IN	<= RegisterFile_QB;
 	
@@ -734,6 +744,64 @@ begin
 	MainProcessor_P2 <= Pipeline_DI_EX_OPCODE_OUT	& Pipeline_DI_EX_OPERAND_A_OUT	& Pipeline_DI_EX_OPERAND_B_OUT	& Pipeline_DI_EX_OPERAND_C_OUT;
 	MainProcessor_P3 <= Pipeline_EX_MEM_OPCODE_OUT	& Pipeline_EX_MEM_OPERAND_A_OUT & Pipeline_EX_MEM_OPERAND_B_OUT & x"00";
 	MainProcessor_P4 <= Pipeline_MEM_RE_OPCODE_OUT	& Pipeline_MEM_RE_OPERAND_A_OUT & Pipeline_MEM_RE_OPERAND_B_OUT & x"00";
+ 
+	-- Data hazards management
+	process(MainProcessor_CLK)
+	begin
+		if rising_edge(MainProcessor_CLK) then
+		
+			if Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_NOP then
+			
+				if	Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_AFC or
+					Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_LOAD
+					then
+					
+					data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_A_IN))) := "1000";
+					
+				-- All other instructions require a reading process from a register
+				-- CAREFUL when adding new instructions
+				else
+					if	data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_B_IN))) /= "0000"
+						or
+						(
+							Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_STORE and
+							Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_COP and
+							data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_C_IN))) /= "0000"
+						)
+						then
+						
+						IP_EN <= '0';
+						Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
+					else
+						IP_EN <= '1';
+						Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+					end if;
+				end if;
+				
+			else
+				IP_EN <= '1';
+				Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+			end if;
+				
+		end if;
+	end process;
+ 
+	process(MainProcessor_CLK)
+	begin
+		if rising_edge(MainProcessor_CLK) then
+			-- Decrement all the register counters
+			for REG in 0 to (CONSTANT_REG_NB - 1) loop
+			
+				if data_hazard_table(REG) /= "0000" then
+					data_hazard_table(REG) := data_hazard_table(REG) - 1;
+				else
+					data_hazard_table(REG) := data_hazard_table(REG);
+				end if;
+				
+			end loop;
+		end if;
+
+	end process;
  
 end Behavioral;
 

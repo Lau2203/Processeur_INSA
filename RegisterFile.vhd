@@ -44,7 +44,7 @@ begin
 	-- Synchronized writing
 	process (clk) 
 	begin
-		if clk'event and clk = '1' then
+		if falling_edge(clk) then
 			-- When RST is active on '0', the register file is reset to 0x00 values
 			if RST = '0' then
 				REGISTERS <= (others => (others => '0'));

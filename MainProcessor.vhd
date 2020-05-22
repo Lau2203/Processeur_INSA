@@ -176,6 +176,7 @@ architecture Behavioral of MainProcessor is
 	COMPONENT InstructionMemory
 		PORT(
 				CLK 	: IN	std_logic;
+				EN		: IN	std_logic;
 				ADDR 	: IN	std_logic_vector(CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0);
 				
 				OUTPUT 	: OUT	std_logic_vector(CONSTANT_INSTRUCTION_SIZE - 1 downto 0)
@@ -185,6 +186,7 @@ architecture Behavioral of MainProcessor is
 
 	-- Inputs
 	signal InstructionMemory_CLK 	: std_logic := '0';
+	signal InstructionMemory_EN 	: std_logic := '0';
 	signal InstructionMemory_ADDR	: std_logic_vector(CONSTANT_INST_MEMORY_ADDR_SIZE - 1 downto 0) := (others => '0');
 
  	-- Outputs
@@ -432,8 +434,8 @@ architecture Behavioral of MainProcessor is
    
    
    
-	type data_hazard_table_type is array (0 to CONSTANT_REG_NB - 1) of STD_LOGIC_VECTOR (4 - 1 downto 0); -- We need to be able to put a '4' value since there are 4 in-between pipelines
-	shared variable data_hazard_table : data_hazard_table_type := (others => (others => '0'));
+	type data_hazard_table_type is array (0 to CONSTANT_REG_NB - 1) of STD_LOGIC_VECTOR (3 - 1 downto 0); -- We need to be able to put a '4' value since there are 4 in-between pipelines
+	signal data_hazard_table : data_hazard_table_type := (others => (others => '0'));
 
 
 begin
@@ -518,6 +520,7 @@ begin
 	
 	instruction_memory_object: InstructionMemory PORT MAP (
 			CLK		=> InstructionMemory_CLK,
+			EN		=> InstructionMemory_EN,
 			ADDR	=> InstructionMemory_ADDR,
 			 
 			OUTPUT	=> InstructionMemory_OUTPUT
@@ -641,6 +644,7 @@ begin
 	-- Enable IP counter
 	--IP_EN	<= '1';
 	
+	--InstructionMemory_EN	<= '1';
 	InstructionMemory_ADDR	<= IP_ADDR;
 	
 	Decoder_INSTRUCTION	<= InstructionMemory_OUTPUT;
@@ -747,60 +751,147 @@ begin
  
 	-- Data hazards management
 	process(MainProcessor_CLK)
+		-- This variable will store the address (number) of the register
+		-- that is modified at a particular clock tick.
+		variable register_nb : integer := -1;
 	begin
 		if rising_edge(MainProcessor_CLK) then
-		
-			if Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_NOP then
 			
-				if	Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_AFC or
-					Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_LOAD
-					then
-					
-					data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_A_IN))) := "1000";
-					
-				-- All other instructions require a reading process from a register
-				-- CAREFUL when adding new instructions
-				else
-					if	data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_B_IN))) /= "0000"
-						or
+			if MainProcessor_RST = '1' then
+			
+				if Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_NOP then
+				
+					-- Instructions that write a new value into a register
+					--
+					-- We need to remember that a register will be modified, and that only after
+					-- 4 clock ticks, since there is 4 intermediate pipelines.
+					if	Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_AFC 	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_LOAD	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_ADD	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_MUL	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_SUB
+						then
+						
+						register_nb := to_integer(unsigned(Pipeline_LI_DI_OPERAND_A_IN));
+						
+						IP_EN <= '1';
+						InstructionMemory_EN <= '1';
+						--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+					end if;
+						
+					-- Instructions that read from a register
+					if	Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_AFC		and
+						Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_LOAD	and
 						(
-							Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_STORE and
-							Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_COP and
-							data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_C_IN))) /= "0000"
+							data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_B_IN))) /= "000"
+							or
+							(
+								Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_COP		and
+								Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_STORE	and
+								data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_C_IN))) /= "000"
+							)
 						)
 						then
 						
 						IP_EN <= '0';
-						Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
+						InstructionMemory_EN <= '0';
+						--Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
 					else
 						IP_EN <= '1';
-						Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+						InstructionMemory_EN <= '1';
+						--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 					end if;
+					
+					
+				else
+					IP_EN <= '1';
+					InstructionMemory_EN <= '1';
+					--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 				end if;
 				
 			else
-				IP_EN <= '1';
-				Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+				IP_EN <= '0';
+				InstructionMemory_EN <= '0';
+				--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 			end if;
 				
-		end if;
-	end process;
- 
-	process(MainProcessor_CLK)
-	begin
-		if rising_edge(MainProcessor_CLK) then
 			-- Decrement all the register counters
 			for REG in 0 to (CONSTANT_REG_NB - 1) loop
 			
-				if data_hazard_table(REG) /= "0000" then
-					data_hazard_table(REG) := data_hazard_table(REG) - 1;
+				-- If register_nb is different from (-1), that means that we
+				-- must enable the countdown from 4 down to 0 for the register
+				-- which have the address stored in register_nb
+				if register_nb = REG then
+					data_hazard_table(REG) <= "100";
+					
+				elsif data_hazard_table(REG) /= "000" then
+					data_hazard_table(REG) <= data_hazard_table(REG) - 1;
+					
 				else
-					data_hazard_table(REG) := data_hazard_table(REG);
+					data_hazard_table(REG) <= data_hazard_table(REG);
 				end if;
 				
 			end loop;
+			
+			-- Reset it to -1 for the next clk's rising edge
+			register_nb := -1;
+				
+			
+		-- Since plugging Pipeline_DI_EX_OPCODE_IN in Pipeline_LI_DI_OPCODE_OUT will take one
+		-- clock tick, we have to do that operation on falling edges, so that all the pipelines
+		-- have the correct value when on the next rising edge.
+		-- Basically the same code as above, but instead of modifying IP_EN and InstructinoMemory_EN we
+		-- do
+		-- 	Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+		-- or 
+		-- 	Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
+		elsif falling_edge(MainProcessor_CLK) then
+		
+			if MainProcessor_RST = '1' then
+			
+				if Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_NOP then
+				
+					-- Instructions that write a new value into a register
+					if	Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_AFC 	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_LOAD	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_ADD	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_MUL	or
+						Pipeline_LI_DI_OPCODE_IN = CONSTANT_OP_SUB
+						then
+						
+						Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+					end if;
+						
+					-- Instructions that read from a register
+					if	Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_AFC		and
+						Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_LOAD	and
+						(
+							data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_B_IN))) /= "000"
+							or
+							(
+								Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_COP		and
+								Pipeline_LI_DI_OPCODE_IN /= CONSTANT_OP_STORE	and
+								data_hazard_table(to_integer(unsigned(Pipeline_LI_DI_OPERAND_C_IN))) /= "000"
+							)
+						)
+						then
+						
+						Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
+						
+					else
+						Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+					end if;
+					
+					
+				else
+					Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+				end if;
+				
+			else
+				Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
+			end if;
+			
 		end if;
-
 	end process;
  
 end Behavioral;

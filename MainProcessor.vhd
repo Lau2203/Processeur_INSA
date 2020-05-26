@@ -776,7 +776,6 @@ begin
 						
 						IP_EN <= '1';
 						InstructionMemory_EN <= '1';
-						--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 					end if;
 						
 					-- Instructions that read from a register
@@ -795,18 +794,15 @@ begin
 						
 						IP_EN <= '0';
 						InstructionMemory_EN <= '0';
-						--Pipeline_DI_EX_OPCODE_IN <= CONSTANT_OP_NOP;
 					else
 						IP_EN <= '1';
 						InstructionMemory_EN <= '1';
-						--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 					end if;
 					
 					
 				else
 					IP_EN <= '1';
 					InstructionMemory_EN <= '1';
-					--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 				end if;
 				
 			else
@@ -815,6 +811,7 @@ begin
 				--Pipeline_DI_EX_OPCODE_IN <= Pipeline_LI_DI_OPCODE_OUT;
 			end if;
 				
+			-- Update data_hazard_table
 			-- Decrement all the register counters
 			for REG in 0 to (CONSTANT_REG_NB - 1) loop
 			
